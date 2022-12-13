@@ -1,13 +1,25 @@
+import os
 import json
 import hashlib
 import fiona
 import geopandas as gpd
 from flask import Flask, jsonify, request
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 from shapely.wkt import loads
 import s2sphere as s2
 
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
+app.config.from_object(os.getenv('APP_SETTINGS'))
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+from db.models import cellTokensModel, geoIdsModel
+
+migrate = Migrate(app, db)
 
 
 @app.route('/generate-geo-id', methods=['POST'])
@@ -35,7 +47,6 @@ def generate_geo_ids():
 
 @app.route('/wkt-to-cell-ids', methods=['POST'])
 def wkt_to_cell_ids():
-
     data = json.loads(request.data.decode('utf-8'))
     field_wkt = data.get('wkt')
     res_level = data.get('level')

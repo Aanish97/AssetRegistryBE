@@ -5,9 +5,8 @@ class S2CellTokens(db.Model):
     __tablename__ = 's2_cell_tokens'
 
     id = db.Column(db.Integer, primary_key=True)
-    cell_id = db.Column(db.String(), unique=True, primary_key=True)
-    cells = db.relationship("S2CellTokens", backref="cells")
-    resolution_level = db.Column(db.Integer())
+    cell_token = db.Column(db.String(), unique=True)
+    cell_geo_ids = db.relationship('CellsGeosMiddle', backref='s2_cell_tokens')
 
     def __init__(self, cell_id, resolution_level):
         self.cell_id = cell_id

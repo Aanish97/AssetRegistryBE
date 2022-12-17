@@ -17,7 +17,7 @@ app = Flask(__name__)
 app.config.from_object(os.getenv('APP_SETTINGS'))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-from db.models import cellTokensModel, geoIdsModel
+from db.models import geoIdsModel, s2CellTokensModel, cellsGeosMiddleModel
 
 migrate = Migrate(app, db)
 

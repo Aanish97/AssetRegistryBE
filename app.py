@@ -39,6 +39,9 @@ def register_field_boundary():
     # s2_index__L13_list is a list of tokens(hex encoded version of the cell id)
     s2_index__l13_list = S2Service.wkt_to_cell_ids(field_wkt, resolution_level)
 
+    # populating the new s2 cell tokens for Resolution Level 13 in the database
+    Utils.populate_new_s2_cell_tokens(s2_index__l13_list)
+
     # generate the geo_id only for `s2_index__l13_list`
     geo_id = Utils.generate_geo_id(s2_index__l13_list)
 
@@ -57,3 +60,16 @@ def register_field_boundary():
         return jsonify({
             "Message": "Field Boundary already registered."
         })
+
+
+@app.route('/fetch-overlapping-fields', methods=['GET'])
+def fetch_overlapping_fields():
+    data = json.loads(request.data.decode('utf-8'))
+    field_wkt = data.get('wkt')
+    resolution_level = data.get('resolution_level')
+
+    # get the L13 indices
+    # s2_index__L13_list is a list of tokens(hex encoded version of the cell id)
+    s2_index__l13_list = S2Service.wkt_to_cell_ids(field_wkt, resolution_level)
+
+    Utils.fetch_geo_ids_for_cell_tokens(s2_index__l13_list, resolution_level)
